@@ -12,7 +12,7 @@ Sometimes, We need to request some other http address in order to get the data(w
 $ConcurrentRPC = new ConcurrentRPC;
 $request = $ConcurrentRPC
     ->get('http://some.one.get.url...', 'some-one-get-url-return-key')
-    ->get('http://the.orthe.getr.url...', 'the-orther-get-url-return-key')
+    ->get('http://the.other.get.url...', 'the-other-get-url-return-key')
     ->post('http://some.one.post.url...', 'some-one-post-url-return-key', array('key' => 'value'));
 ```
 
