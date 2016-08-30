@@ -72,12 +72,14 @@ class ConcurrentRPC
             $this->send($request);
         }
         foreach ($this->_fps as $key => $fp) {
-            $result[$key] = '';
-            while (!feof($this->_fps[$key])) {
-                $result[$key] .= fread($this->_fps[$key], 1024);
+            $result[$key] = false;
+            if ($fp !== false) {
+                while (!feof($this->_fps[$key])) {
+                    $result[$key] .= fread($this->_fps[$key], 1024);
+                }
+                $result[$key] = $this->getBody($result[$key]);
+                fclose($this->_fps[$key]);
             }
-            $result[$key] = $this->getBody($result[$key]);
-            fclose($this->_fps[$key]);
         }
         return $result;
     }
@@ -141,7 +143,7 @@ class ConcurrentRPC
         $method = isset($request['method']) ? strtoupper($request['method']) : "GET";
         $url_array = parse_url($request['url']);
         $port = isset($url_array['port']) ? $url_array['port'] : 80;
-        $this->_fps[$request['returnKey']] = fsockopen($url_array['host'], $port, $errno, $errstr, 30);
+        $this->_fps[$request['returnKey']] = @fsockopen($url_array['host'], $port, $errno, $errstr, 30);
         if (!$this->_fps[$request['returnKey']]) {
             return false;
         }
